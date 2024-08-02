@@ -7,14 +7,21 @@
     neovim.url = "github:erik-sundin-git/neovim";
   };
 
-  outputs = { self, nixpkgs,neovim, ... }@inputs: {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+  outputs = {
+    self,
+    nixpkgs,
+    neovim,
+    ...
+  } @ inputs: {
+    nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {
-	  inherit inputs;
-	};
+        inherit inputs;
+      };
       modules = [
-        ./config.nix
+        ./nixos/config.nix
+        ./nixos/hosts/yoga/default.nix
+        ./nixos/modules/default.nix
       ];
     };
   };
