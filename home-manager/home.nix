@@ -11,11 +11,8 @@
   home.homeDirectory = "/home/erik";
   home.stateVersion = "24.05"; # Don't change.
 
-  home.packages = [
+  home.packages = with pkgs; [
   ];
-
-  home.file = {
-  };
 
   home.sessionVariables = {
   };

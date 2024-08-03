@@ -4,4 +4,7 @@
 
   programs.zsh.enable = true;
   programs.zoxide.enable = true;
+  programs.starship.enable = true;
+
+  programs.chromium.enable = true;
 }

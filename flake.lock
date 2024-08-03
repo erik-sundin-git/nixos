@@ -125,6 +125,38 @@
         "type": "github"
       }
     },
+    "nixpkgs-patched": {
+      "locked": {
+        "lastModified": 1722417591,
+        "narHash": "sha256-nlzQWZUwJkI1SH4wTWYIHYU7+DqkJ7u+F9Y9oiQGPUc=",
+        "owner": "erik-sundin-git",
+        "repo": "nixpkgs",
+        "rev": "571cb472b1ec7ba9a04edf4c241fe61c11d96d5a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "erik-sundin-git",
+        "ref": "picom-ftlabs",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-stable": {
+      "locked": {
+        "lastModified": 1722519197,
+        "narHash": "sha256-VEdJmVU2eLFtLqCjTYJd1J7+Go8idAcZoT11IewFiRg=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "05405724efa137a0b899cce5ab4dde463b4fd30b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1722421184,
@@ -864,7 +896,9 @@
     "root": {
       "inputs": {
         "neovim": "neovim",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "nixpkgs-patched": "nixpkgs-patched",
+        "nixpkgs-stable": "nixpkgs-stable"
       }
     },
     "rust-overlay": {

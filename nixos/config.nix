@@ -55,6 +55,9 @@
   # Enable touchpad support (enabled default in most desktopManager).
   services.xserver.libinput.enable = true;
 
+  users.defaultUserShell = pkgs.zsh;
+  users.users.root.ignoreShellProgramCheck = true;
+  users.users.erik.ignoreShellProgramCheck = true;
   users.users.erik = {
     isNormalUser = true;
     description = "erik";
@@ -66,13 +69,7 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
     inputs.neovim.defaultPackage.x86_64-linux
-    pkgs.kitty
-    pkgs.rofi
-    pkgs.zsh
-    pkgs.nitrogen
   ];
 
   system.stateVersion = "24.05";
