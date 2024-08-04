@@ -3,10 +3,12 @@
   lib,
   ...
 }: {
+  networking.firewall.extraCommands = ''iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns'';
+
   # For mount.cifs, required unless domain name resolution is not needed.
   environment.systemPackages = [pkgs.cifs-utils];
   fileSystems."/mnt/share" = {
-    device = "//<IP_OR_HOST>/path/to/share";
+    device = "//u416901.your-storagebox.de/backup";
     fsType = "cifs";
     options = let
       # this line prevents hanging on network split
