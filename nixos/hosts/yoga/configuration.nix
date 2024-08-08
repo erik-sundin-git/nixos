@@ -3,6 +3,7 @@
   pkgs,
   pkgs-stable,
   pkgs-patched,
+  stylix,
   inputs,
   nvim,
   ...
@@ -19,6 +20,8 @@
     pkgs-stable.qutebrowser
     pkgs-patched.picom-ftlabs
   ];
+
+  stylix.enable = true;
 
   ### bluetooth ###
   hardware.bluetooth.enable = true;

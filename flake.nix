@@ -6,7 +6,11 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs?ref=nixos-24.05";
     nixpkgs-patched.url = "github:erik-sundin-git/nixpkgs?ref=picom-ftlabs";
 
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
     neovim.url = "github:erik-sundin-git/neovim";
+    stylix.url = "github:danth/stylix";
   };
 
   outputs = {
@@ -15,12 +19,15 @@
     nixpkgs-stable,
     nixpkgs-patched,
     neovim,
+    stylix,
+    home-manager,
     ...
   } @ inputs: let
     systemSettings = {
       system = "x86_64-linux"; # system arch
       homeDir = builtins.getEnv "HOME";
-      isServer = false; # if true it disables some desktop features like xorg.
+      user = "erik";
+      wallpaper = ./wallpapers/tokyo_night.jpg;
     };
     pkgs-stable = import nixpkgs-stable {
       system = systemSettings.system;
@@ -31,16 +38,29 @@
       system = systemSettings.system;
       config.allowUnfree = true;
     };
+
+    /*
+    * Variables to be used within the configurations
+    */
+    args = {
+      inherit inputs;
+      inherit systemSettings;
+      inherit pkgs-stable;
+      inherit pkgs-patched;
+    };
   in {
     nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
-      specialArgs = {
-        inherit inputs;
-        inherit systemSettings;
-        inherit pkgs-stable;
-        inherit pkgs-patched;
-      };
+      specialArgs = args;
       modules = [
+        stylix.nixosModules.stylix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
+        }
+
         ./nixos/config.nix
         ./nixos/hosts/yoga/default.nix
         ./nixos/modules/default.nix
@@ -48,12 +68,7 @@
     };
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
-      specialArgs = {
-        inherit inputs;
-        inherit systemSettings;
-        inherit pkgs-stable;
-        inherit pkgs-patched;
-      };
+      specialArgs = args;
       modules = [
         ./nixos/config.nix
         ./nixos/hosts/desktop/default.nix
