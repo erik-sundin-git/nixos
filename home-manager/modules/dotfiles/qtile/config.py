@@ -66,25 +66,12 @@ def create_bars() -> bar.Bar:
             widget.CurrentLayout(fontsize=FONT_SIZE),
             widget.Spacer(),
             widget.GroupBox(fontsize=FONT_SIZE),
-            widget.Prompt(),
-            widget.Chord(
-                chords_colors={
-                    "launch": ("#ff0000", "#ffffff"),
-                },
-                name_transform=lambda name: name.upper(),
-            ),
             widget.Spacer(),
-            battery_widget() if host_name == "LENOVO" else None,
-            widget.PulseVolume(),
-            widget.Bluetooth(
-                background=colors.color_18,
-                foreground="000000",
-            ),
             widget.Memory(
                 background=colors.color_16,
                 foreground="000000",
             ),
-            widget.Systray(),
+            #            widget.Systray(),
             widget.Clock(format="%Y-%m-%d %a %H:%M %p"),
             widget.QuickExit(),
         ],
@@ -266,7 +253,7 @@ screens = [
         top=create_bars(),
     ),
     Screen(
-        top=create_bars(),
+        # top=create_bars(),
     ),
 ]
 

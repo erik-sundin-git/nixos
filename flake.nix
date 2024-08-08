@@ -43,5 +43,18 @@
         ./nixos/modules/default.nix
       ];
     };
+    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+      system = systemSettings.system;
+      specialArgs = {
+        inherit inputs;
+        inherit pkgs-stable;
+        inherit pkgs-patched;
+      };
+      modules = [
+        ./nixos/config.nix
+        ./nixos/hosts/desktop/default.nix
+        ./nixos/modules/default.nix
+      ];
+    };
   };
 }
