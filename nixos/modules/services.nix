@@ -1,5 +1,6 @@
 {
   config,
+  systemSettings,
   lib,
   pkgs,
   ...

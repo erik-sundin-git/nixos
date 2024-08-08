@@ -10,6 +10,9 @@
   imports = [
     ./hardware-configuration.nix
   ];
+  programs.steam.enable = true;
+  services.flatpak.enable = true;
+
   environment.systemPackages = [
     pkgs.kitty
     pkgs.rofi

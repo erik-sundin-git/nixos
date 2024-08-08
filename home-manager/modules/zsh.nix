@@ -38,6 +38,8 @@
       "commit" = "git commit";
       "gp" = "git push";
 
+      "config" = "git --git-dir=$HOME/.cfg/ --work-tree=$HOME";
+
       ## System ##
       "rebuild-config" = "sudo nixos-rebuild switch --impure --flake ${config.home.homeDirectory}/nix#erik";
       "update-config" = "${config.home.homeDirectory}/nix/modules/system/scripts/update.sh";

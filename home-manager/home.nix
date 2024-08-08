@@ -15,7 +15,7 @@ in {
 
   home.packages = with pkgs; [
     pavucontrol
-
+    nautilus
   ];
 
   home.sessionPath = [

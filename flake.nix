@@ -19,6 +19,8 @@
   } @ inputs: let
     systemSettings = {
       system = "x86_64-linux"; # system arch
+      homeDir = builtins.getEnv "HOME";
+      isServer = false; # if true it disables some desktop features like xorg.
     };
     pkgs-stable = import nixpkgs-stable {
       system = systemSettings.system;
@@ -34,6 +36,7 @@
       system = systemSettings.system;
       specialArgs = {
         inherit inputs;
+        inherit systemSettings;
         inherit pkgs-stable;
         inherit pkgs-patched;
       };
@@ -47,6 +50,7 @@
       system = systemSettings.system;
       specialArgs = {
         inherit inputs;
+        inherit systemSettings;
         inherit pkgs-stable;
         inherit pkgs-patched;
       };

@@ -4,9 +4,7 @@
   inputs,
   nvim,
   ...
-}: let
-  homeDir = builtins.getEnv "HOME";
-in {
+}: {
   imports = [
   ];
   nix.settings.experimental-features = ["nix-command flakes"];
