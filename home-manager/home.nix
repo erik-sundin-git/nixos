@@ -15,6 +15,7 @@ in {
 
   home.packages = with pkgs; [
     pavucontrol
+
   ];
 
   home.sessionPath = [
