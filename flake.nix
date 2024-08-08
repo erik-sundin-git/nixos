@@ -27,7 +27,7 @@
       system = "x86_64-linux"; # system arch
       homeDir = builtins.getEnv "HOME";
       user = "erik";
-      wallpaper = ./wallpapers/tokyo_night.jpg;
+      wallpaper = ./wallpapers/misc/abstract/kanji-with-blobs_00_1920x1080.png;
     };
     pkgs-stable = import nixpkgs-stable {
       system = systemSettings.system;
