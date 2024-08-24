@@ -75,5 +75,13 @@
         ./nixos/modules/default.nix
       ];
     };
+    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
+      system = systemSettings.system;
+      specialArgs = args;
+      modules = [
+        ./nixos/hosts/vm/default.nix
+      ];
+    };
+
   };
 }
