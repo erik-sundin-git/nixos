@@ -12,12 +12,14 @@
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
         script = "
-        ${pkgs.git} clone https://github.com/erik-sundin-git/nixos.git
+        mkdir $out
+        cd out
+        ${pkgs.git}/bin/git clone https://github.com/erik-sundin-git/nixos.git
         cd nixos
         ";
       in {
         packages = rec {
-          install = pkgs.writeShellScriptBin "hello" ''${script}'';
+          install = pkgs.writeShellScriptBin "install-config" ''${script}'';
           default = install;
         };
         apps = rec {

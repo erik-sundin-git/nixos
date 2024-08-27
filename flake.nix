@@ -86,6 +86,8 @@
       ];
     };
 
-    packages.${systemSettings.system}.install = install-script.packages.${systemSettings.system}.install;
+    packages.${systemSettings.system} = {
+      install = install-script.packages.${systemSettings.system}.install; #basically just clones the repo atm.
+    };
   };
 }
