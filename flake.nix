@@ -16,6 +16,7 @@
 
     neovim.url = "github:erik-sundin-git/neovim";
     stylix.url = "github:danth/stylix";
+    install-script.url = "path:./install";
   };
 
   outputs = {
@@ -23,6 +24,7 @@
     nixpkgs,
     nixpkgs-stable,
     nixpkgs-patched,
+    install-script,
     neovim,
     stylix,
     home-manager,
@@ -52,6 +54,7 @@
       inherit systemSettings;
       inherit pkgs-stable;
       inherit pkgs-patched;
+      inherit install-script;
     };
   in {
     nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
@@ -80,6 +83,17 @@
         ./nixos/hosts/desktop/default.nix
         ./nixos/modules/default.nix
       ];
+    };
+    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
+      system = systemSettings.system;
+      specialArgs = args;
+      modules = [
+        ./nixos/hosts/vm/default.nix
+      ];
+    };
+
+    packages.${systemSettings.system} = {
+      install = install-script.packages.${systemSettings.system}.install; #basically just clones the repo atm.
     };
   };
 }
