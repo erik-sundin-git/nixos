@@ -11,7 +11,10 @@
     flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
-        script = "echo hello";
+        script = "
+        ${pkgs.git} clone https://github.com/erik-sundin-git/nixos.git
+        cd nixos
+        ";
       in {
         packages = rec {
           install = pkgs.writeShellScriptBin "hello" ''${script}'';
