@@ -1,3 +1,4 @@
+{dots, ...}:
 {
   imports = [
     ./programs.nix

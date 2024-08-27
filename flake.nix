@@ -9,6 +9,11 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    dots = {
+      url = "github:erik-sundin-git/dotfiles/nix";
+      flake = false;
+    };
+
     neovim.url = "github:erik-sundin-git/neovim";
     stylix.url = "github:danth/stylix";
   };
@@ -25,7 +30,7 @@
   } @ inputs: let
     systemSettings = {
       system = "x86_64-linux"; # system arch
-      homeDir = builtins.getEnv "HOME";
+      homeDir = "/home/erik";
       user = "erik";
       wallpaper = ./wallpapers/misc/abstract/kanji-with-blobs_00_1920x1080.png;
     };
@@ -59,6 +64,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
+          home-manager.extraSpecialArgs = {inherit inputs;};
         }
 
         ./nixos/config.nix

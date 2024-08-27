@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
+{pkgs,config, inputs, ...}: let
   homeDir = "/home/erik";
 in {
   imports = [
@@ -13,9 +9,9 @@ in {
   home.homeDirectory = homeDir;
   home.stateVersion = "24.05"; # Don't change.
 
-  home.packages = with pkgs; [
-    pavucontrol
-    nautilus
+  home.packages = [
+    pkgs.pavucontrol
+    pkgs.nautilus
   ];
 
   home.sessionPath = [

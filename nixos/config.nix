@@ -4,11 +4,15 @@
   inputs,
   nvim,
   ...
-}: {
+}: let
+  accessTokenFile = builtins.readFile /etc/githubtoken;
+in {
   imports = [
   ];
   nix.settings.experimental-features = ["nix-command flakes"];
+  nix.extraOptions = "access-tokens = " + accessTokenFile;
   networking.hostName = "nixos";
+
   #  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
 
@@ -26,12 +30,12 @@
     LC_TIME = "sv_SE.UTF-8";
   };
 
-  # Configure keymap in X11
   services.xserver = {
-    layout = "se";
-    xkbVariant = "";
+    xkb.layout = "se";
+    xkb.variant = "";
+    enable = true;
+    videoDrivers = ["displaylink" "modesetting"];
   };
-
   console.keyMap = "sv-latin1";
 
   # Enable CUPS to print documents.
@@ -68,9 +72,14 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
     inputs.neovim.defaultPackage.x86_64-linux
-    pkgs.git
+    git
+    emacs
+
+    fira
+    fira-code
+    (writeShellScriptBin "nix-doom-install" (builtins.readFile ./scripts/nix-doom-install.sh))
   ];
   system.stateVersion = "24.05";
 }
