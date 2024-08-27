@@ -268,7 +268,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-7BGQJTZaD1ZvAquywUTvXss9KfPatyPAkVazqgi9tuA=",
+        "narHash": "sha256-xTsl5EK3jzU44MhrHjv6uolpSpRy2gm1jtglzSBUmf4=",
         "path": "./install",
         "type": "path"
       },
