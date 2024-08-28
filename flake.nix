@@ -38,7 +38,7 @@
       user = "erik";
       wallpaper = ./wallpapers/misc/abstract/kanji-with-blobs_00_1920x1080.png;
     };
-    
+
     pkgs-stable = import nixpkgs-stable {
       system = systemSettings.system;
       config.allowUnfree = true;

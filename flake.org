@@ -4,7 +4,7 @@
 
 * My Nix Configuration
 My Flake containing my different nixos systems and packages.
-For Nixos config see [[file:./nixos/config.org][config]]
+For Nixos config see [[file:./nixos/README.md][config]]
 ** Flake Inputs
 #+BEGIN_SRC nix
 {
@@ -52,7 +52,7 @@ Some settings i use within my flake.
       user = "erik";
       wallpaper = ./wallpapers/misc/abstract/kanji-with-blobs_00_1920x1080.png;
     };
-    
+
     pkgs-stable = import nixpkgs-stable {
       system = systemSettings.system;
       config.allowUnfree = true;
