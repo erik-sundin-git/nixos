@@ -1,3 +1,12 @@
+#+title: Flake
+#+EXPORT_FILE_NAME: README.md
+#+PROPERTY: header-args :tangle yes
+
+* My Nix Configuration
+My Flake containing my different nixos systems and packages.
+For Nixos config see [[file:./nixos/config.org][config]]
+** Flake Inputs
+#+BEGIN_SRC nix
 {
   description = "My Nix Configuration";
 
@@ -18,7 +27,9 @@
     stylix.url = "github:danth/stylix";
     install-script.url = "path:./install";
   };
-
+  #+END_SRC
+** Flake outputs
+  #+BEGIN_SRC nix
   outputs = {
     self,
     nixpkgs,
@@ -30,7 +41,10 @@
     home-manager,
     ...
   } @ inputs:
-
+#+END_SRC
+** Flake settings
+Some settings i use within my flake.
+#+BEGIN_SRC nix
     let
     systemSettings = {
       system = "x86_64-linux"; # system arch
@@ -50,8 +64,8 @@
     };
 
     /*
-    * Variables to be used within the configurations
-    */
+    ,* Variables to be used within the configurations
+    ,*/
     args = {
       inherit inputs;
       inherit systemSettings;
@@ -60,7 +74,10 @@
       inherit install-script;
     };
   in
-
+#+END_SRC
+** Nixos configurations
+*** Laptop
+#+BEGIN_SRC nix
     {
     nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
@@ -79,7 +96,9 @@
         ./nixos/modules/default.nix
       ];
     };
-
+    #+END_SRC
+*** Desktop
+#+BEGIN_SRC nix
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
       specialArgs = args;
@@ -89,7 +108,9 @@
         ./nixos/modules/default.nix
       ];
     };
-
+    #+END_SRC
+*** Virtual machine
+    #+BEGIN_SRC nix
     nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
       specialArgs = args;
@@ -98,8 +119,12 @@
       ];
     };
 
+    #+END_SRC
+** Flake Packages
+    #+BEGIN_SRC  nix
     packages.${systemSettings.system} = {
       install = install-script.packages.${systemSettings.system}.install; #basically just clones the repo atm.
     };
   };
 }
+#+END_SRC

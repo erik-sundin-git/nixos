@@ -15,7 +15,7 @@
 
   systemSettings = {
     networking.hostname = "yoga";
-    packageSets = with packageSets; [desktop];
+    packageSets = []; #TODO concatLists?
   };
 
   # From the unstable channel of nixpkgs
@@ -35,7 +35,7 @@
   # The different sets of packages.
   packageSets = {
     server = [];
-    desktop = [pkgs.hello];
+    desktop = [];
   };
 
   lib = pkgs.lib;

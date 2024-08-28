@@ -25,7 +25,7 @@ These are the main options i change.
 
   systemSettings = {
     networking.hostname = "yoga";
-    packageSets = with packageSets; [desktop]; #TODO concatLists?
+    packageSets = []; #TODO concatLists?
   };
 #+END_SRC
 ** Packages
@@ -47,7 +47,7 @@ These are the main options i change.
   # The different sets of packages.
   packageSets = {
     server = [];
-    desktop = [pkgs.hello];
+    desktop = [];
   };
 
   lib = pkgs.lib;
