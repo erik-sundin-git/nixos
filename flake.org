@@ -5,7 +5,12 @@
 * My Nix Configuration
 My Flake containing my different nixos systems and packages.
 For Nixos config see [[file:./nixos/README.md][config]]
-** Flake Inputs
+** Explanation
+My systems are defined here [[*Nixos configurations][Nixos Configurations]].
+My main [[file:./nixos/config.nix][config]] is imported by most of my systems.
+More modules can be added to each system as needed.
+** Config
+*** Flake Inputs
 #+BEGIN_SRC nix
 {
   description = "My Nix Configuration";
@@ -28,7 +33,7 @@ For Nixos config see [[file:./nixos/README.md][config]]
     install-script.url = "path:./install";
   };
   #+END_SRC
-** Flake outputs
+*** Flake outputs
   #+BEGIN_SRC nix
   outputs = {
     self,
@@ -42,7 +47,7 @@ For Nixos config see [[file:./nixos/README.md][config]]
     ...
   } @ inputs:
 #+END_SRC
-** Flake settings
+*** Flake settings
 Some settings i use within my flake.
 #+BEGIN_SRC nix
     let
@@ -75,8 +80,8 @@ Some settings i use within my flake.
     };
   in
 #+END_SRC
-** Nixos configurations
-*** Laptop
+*** Nixos configurations
+**** Laptop
 #+BEGIN_SRC nix
     {
     nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
@@ -97,7 +102,7 @@ Some settings i use within my flake.
       ];
     };
     #+END_SRC
-*** Desktop
+**** Desktop
 #+BEGIN_SRC nix
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
@@ -109,7 +114,7 @@ Some settings i use within my flake.
       ];
     };
     #+END_SRC
-*** Virtual machine
+**** Virtual machine
     #+BEGIN_SRC nix
     nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
@@ -120,7 +125,7 @@ Some settings i use within my flake.
     };
 
     #+END_SRC
-** Flake Packages
+*** Flake Packages
     #+BEGIN_SRC  nix
     packages.${systemSettings.system} = {
       install = install-script.packages.${systemSettings.system}.install; #basically just clones the repo atm.

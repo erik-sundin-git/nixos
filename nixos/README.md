@@ -1,6 +1,6 @@
 
 # Table of Contents
-
+  
 1.  [Inputs](#org8394c02)
 2.  [Configuration options](#org4c081b0)
 3.  [Main config](#orga1e2156)
