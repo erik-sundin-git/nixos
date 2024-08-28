@@ -1,5 +1,6 @@
 #+title: Config
 #+TITLE: NixOS Configuration
+#+EXPORT_FILE_NAME: README.md
 #+PROPERTY: header-args :tangle yes
 * Inputs
 #+BEGIN_SRC nix
@@ -24,9 +25,11 @@ These are the main options i change.
 
   systemSettings = {
     networking.hostname = "yoga";
-    packageSets = with packageSets; [desktop];
+    packageSets = with packageSets; [desktop]; #TODO concatLists?
   };
-
+#+END_SRC
+** Packages
+#+BEGIN_SRC nix
   # From the unstable channel of nixpkgs
   defaultPackages = with pkgs; [
     git
@@ -130,6 +133,8 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
   programs.firefox.enable = true;
 #+END_SRC
 ** Packages
+My package configuration.
+
 #+BEGIN_SRC nix
   nixpkgs.config.allowUnfree = true;
 
@@ -151,7 +156,6 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
 ** services
 Enable services here. Their respective
 Service can be seen below.
-*** Enable
 #+BEGIN_SRC nix
   services.displayManager.sddm.enable = true;
   services.xserver.windowManager.qtile.enable = true;
