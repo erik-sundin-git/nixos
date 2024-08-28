@@ -9,28 +9,56 @@
  let
   accessTokenFile = builtins.readFile /etc/githubtoken; # Isn't really using.
 
+  userSettings = {
+    username ="erik";
+  };
 
+  systemSettings = {
+    networking.hostname = "yoga";
+    packageSets = with packageSets; [desktop];
+  };
+
+  # From the unstable channel of nixpkgs
+  defaultPackages = with pkgs; [
+    git
+    emacs
+    inputs.neovim.defaultPackage.x86_64-linux
+
+    # fonts
+    fira
+    fira-code
+
+    # latex
+    texliveFull
+  ];
+
+  # The different sets of packages.
+  packageSets = {
+    server = [];
+    desktop = [pkgs.hello];
+  };
 
   lib = pkgs.lib;
+
 in
 
   {
   imports = [
   ];
 
-  networking.hostName = "nixos";
+  networking.hostName = systemSettings.networking.hostname;
   #  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
 
-users.users.erik = {
+users.users.${userSettings.username} = {
     isNormalUser = true;
-    description = "erik";
+    description = "";
     extraGroups = ["networkmanager" "wheel"];
+    ignoreShellProgramCheck = true;
   };
 
   users.defaultUserShell = pkgs.zsh;
   users.users.root.ignoreShellProgramCheck = true;
-  users.users.erik.ignoreShellProgramCheck = true;
 
 nix.settings.experimental-features = ["nix-command flakes"];
 nix.extraOptions = "access-tokens = " + accessTokenFile;
@@ -69,18 +97,12 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
 
   programs.firefox.enable = true;
 
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [
-    inputs.neovim.defaultPackage.x86_64-linux
-    git
-    emacs
-
-    fira
-    fira-code
-    (writeShellScriptBin "nix-doom-install" (builtins.readFile ./scripts/nix-doom-install.sh))
-  ];
+  environment.systemPackages = lib.concatLists [
+    [ (pkgs.writeShellScriptBin "nix-doom-install" (builtins.readFile ./scripts/nix-doom-install.sh)) ]
+    systemSettings.packageSets
+  ] ++ defaultPackages;
 
   console.keyMap = "sv-latin1";
 
