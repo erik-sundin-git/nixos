@@ -36,7 +36,7 @@
       system = "x86_64-linux"; # system arch
       homeDir = "/home/erik";
       user = "erik";
-      wallpaper = ./wallpapers/misc/abstract/kanji-with-blobs_00_1920x1080.png;
+      wallpaper = ./home-manager/wallpapers/tokyo_night.jpg;
     };
 
     pkgs-stable = import nixpkgs-stable {

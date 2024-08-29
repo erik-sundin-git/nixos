@@ -14,8 +14,7 @@
   };
 
   systemSettings = {
-    networking.hostname = "yoga";
-    packageSets = []; #TODO concatLists?
+    networking.hostname = lib.mkDefault "yoga";
   };
 
   # From the unstable channel of nixpkgs
@@ -30,13 +29,9 @@
 
     # latex
     texliveFull
-  ];
 
-  # The different sets of packages.
-  packageSets = {
-    server = [];
-    desktop = [];
-  };
+    ledger
+  ];
 
   lib = pkgs.lib;
 
@@ -101,7 +96,6 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
 
   environment.systemPackages = lib.concatLists [
     [ (pkgs.writeShellScriptBin "nix-doom-install" (builtins.readFile ./scripts/nix-doom-install.sh)) ]
-    systemSettings.packageSets
   ] ++ defaultPackages;
 
   console.keyMap = "sv-latin1";

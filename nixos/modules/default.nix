@@ -3,7 +3,7 @@
     #    ./samba-client.nix
 #    ./xdg-portal.nix
 #    ./davfs2.nix
-    ../../stylix/default.nix
+    ./stylix
     #    ./ssh-share.nix
   ];
 }

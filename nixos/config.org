@@ -2,7 +2,11 @@
 #+TITLE: NixOS Configuration
 #+EXPORT_FILE_NAME: README.md
 #+PROPERTY: header-args :tangle yes
-* Inputs
+
+* Nix os config
+I plan for this to be my default config.
+* Config
+** Inputs
 #+BEGIN_SRC nix
 {
   config,
@@ -12,9 +16,10 @@
   ...
 }:
 #+END_SRC
-* Configuration options
+** Configuration options
 Variables and different files i use within my config.
 These are the main options i change.
+*** settings
 #+BEGIN_SRC nix
  let
   accessTokenFile = builtins.readFile /etc/githubtoken; # Isn't really using.
@@ -24,11 +29,10 @@ These are the main options i change.
   };
 
   systemSettings = {
-    networking.hostname = "yoga";
-    packageSets = []; #TODO concatLists?
+    networking.hostname = lib.mkDefault "yoga";
   };
 #+END_SRC
-** Packages
+*** Packages
 #+BEGIN_SRC nix
   # From the unstable channel of nixpkgs
   defaultPackages = with pkgs; [
@@ -42,34 +46,30 @@ These are the main options i change.
 
     # latex
     texliveFull
-  ];
 
-  # The different sets of packages.
-  packageSets = {
-    server = [];
-    desktop = [];
-  };
+    ledger
+  ];
 
   lib = pkgs.lib;
 
 in
 #+END_SRC
-* Main config
-** Imports
+** Main config
+*** Imports
 #+BEGIN_SRC nix
   {
   imports = [
   ];
 
   #+END_SRC
-** Networking
+*** Networking
 #+BEGIN_SRC nix
   networking.hostName = systemSettings.networking.hostname;
   #  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
 
 #+END_SRC
-** User
+*** User
 #+BEGIN_SRC nix
 users.users.${userSettings.username} = {
     isNormalUser = true;
@@ -78,17 +78,17 @@ users.users.${userSettings.username} = {
     ignoreShellProgramCheck = true;
   };
 #+END_SRC
-*** Shell
+**** Shell
 #+BEGIN_SRC nix
   users.defaultUserShell = pkgs.zsh;
   users.users.root.ignoreShellProgramCheck = true;
 #+END_SRC
-** Nix Settings
+*** Nix Settings
 #+BEGIN_SRC nix
 nix.settings.experimental-features = ["nix-command flakes"];
 nix.extraOptions = "access-tokens = " + accessTokenFile;
 #+END_SRC
-** Locale
+*** Locale
 
 #+BEGIN_SRC nix
   time.timeZone = "Europe/Stockholm";
@@ -105,7 +105,7 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
     LC_TIME = "sv_SE.UTF-8";
   };
 #+END_SRC
-** Audio
+*** Audio
 #+BEGIN_SRC nix
  # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -117,7 +117,7 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
     jack.enable = true;
   };
 #+END_SRC
-** X server
+*** X server
 #+BEGIN_SRC nix
   services.xserver = {
     xkb.layout = "se";
@@ -128,11 +128,11 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
   };
   #+END_SRC
 
-** Programs
+*** Programs
 #+BEGIN_SRC nix
   programs.firefox.enable = true;
 #+END_SRC
-** Packages
+*** Packages
 My package configuration.
 
 #+BEGIN_SRC nix
@@ -140,10 +140,9 @@ My package configuration.
 
   environment.systemPackages = lib.concatLists [
     [ (pkgs.writeShellScriptBin "nix-doom-install" (builtins.readFile ./scripts/nix-doom-install.sh)) ]
-    systemSettings.packageSets
   ] ++ defaultPackages;
 #+END_SRC
-** TODO Other
+*** TODO Other
 #+BEGIN_SRC nix
   console.keyMap = "sv-latin1";
 
@@ -153,7 +152,7 @@ My package configuration.
 
 
 #+END_SRC
-** services
+*** services
 Enable services here. Their respective
 Service can be seen below.
 #+BEGIN_SRC nix
@@ -165,7 +164,7 @@ Service can be seen below.
     davfs2.enable = true;
   };
 #+END_SRC
-*** Flatpak
+**** Flatpak
 #+BEGIN_SRC nix
     xdg.portal = lib.mkIf (config.services.flatpak.enable) {
     enable = true;
@@ -174,7 +173,7 @@ Service can be seen below.
     ];
   };
 #+END_SRC
-*** davfs2
+**** davfs2
 #+BEGIN_SRC nix
     services.autofs = lib.mkIf (config.services.davfs2.enable) {
       enable = false;
