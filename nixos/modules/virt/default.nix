@@ -1,3 +1,7 @@
+# virt module
+# Contains all virtualization specific options.
+#
+#
 {
   config,
   lib,
@@ -6,11 +10,6 @@
 }:
 
 with lib;
-
-let
-in
-# Define any helper functions or constants here, if needed
-# For example, you can define paths, URLs, or other static values.
 {
   options = {
 
@@ -19,17 +18,27 @@ in
       default = false;
       description = "Enable or disable the virt-module.";
     };
-
-    # An example string option
-    myModule.someOption = mkOption {
-      type = types.str;
-      default = "defaultValue";
-      description = "A description of what this option does.";
-    };
   };
 
-  config = mkIf config.myModule.enable {
+  config = mkIf config.virt.enable {
+    virtualisation.libvirtd.enable = true;
+    programs.virt-manager.enable = true;
+    security.polkit.enable = mkForce true;
 
-
+    systemd = {
+  user.services.polkit-gnome-authentication-agent-1 = {
+    description = "polkit-gnome-authentication-agent-1";
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
+  };
+};
   };
 }

@@ -59,7 +59,9 @@ in
 #+BEGIN_SRC nix
   {
   imports = [
+  ./modules
   ];
+  virt.enable = true;
 
   #+END_SRC
 *** Networking
@@ -134,7 +136,7 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
 #+END_SRC
 *** Packages
 My package configuration.
-
+To install packages add them here: [[*Packages][Packages]]
 #+BEGIN_SRC nix
   nixpkgs.config.allowUnfree = true;
 
@@ -158,7 +160,6 @@ Service can be seen below.
 #+BEGIN_SRC nix
   services.displayManager.sddm.enable = true;
   services.xserver.windowManager.qtile.enable = true;
-  #services.desktopManager.plasma6.enable = true;
   services = {
     flatpak.enable = true;
     davfs2.enable = true;

@@ -39,7 +39,9 @@ in
 
   {
   imports = [
+  ./modules
   ];
+  virt.enable = true;
 
   networking.hostName = systemSettings.networking.hostname;
   #  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
@@ -106,7 +108,6 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
 
   services.displayManager.sddm.enable = true;
   services.xserver.windowManager.qtile.enable = true;
-  #services.desktopManager.plasma6.enable = true;
   services = {
     flatpak.enable = true;
     davfs2.enable = true;
