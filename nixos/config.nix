@@ -42,6 +42,7 @@ in
   ./modules
   ];
   virt.enable = true;
+  flatpak.enable = true;
 
   networking.hostName = systemSettings.networking.hostname;
   #  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
