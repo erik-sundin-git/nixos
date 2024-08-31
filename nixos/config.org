@@ -124,10 +124,10 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
   services.xserver = {
     xkb.layout = "se";
     xkb.variant = "";
-    libinput.enable = true;
     enable = true;
     videoDrivers = ["displaylink" "modesetting"];
   };
+  services.libinput.enable = true;
   #+END_SRC
 
 *** Programs
@@ -169,6 +169,8 @@ Service can be seen below.
 #+BEGIN_SRC nix
     xdg.portal = lib.mkIf (config.services.flatpak.enable) {
     enable = true;
+    config.common.default = "*";
+
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
     ];

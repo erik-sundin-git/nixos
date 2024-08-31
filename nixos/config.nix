@@ -87,10 +87,10 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
   services.xserver = {
     xkb.layout = "se";
     xkb.variant = "";
-    libinput.enable = true;
     enable = true;
     videoDrivers = ["displaylink" "modesetting"];
   };
+  services.libinput.enable = true;
 
   programs.firefox.enable = true;
 
@@ -115,6 +115,8 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
 
     xdg.portal = lib.mkIf (config.services.flatpak.enable) {
     enable = true;
+    config.common.default = "*";
+
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
     ];
