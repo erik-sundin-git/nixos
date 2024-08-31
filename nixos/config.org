@@ -39,7 +39,7 @@ These are the main options i change.
     git
     emacs
     inputs.neovim.defaultPackage.x86_64-linux
-
+    pkgs.nixfmt-rfc-style
     # fonts
     fira
     fira-code
@@ -62,6 +62,7 @@ in
   ./modules
   ];
   virt.enable = true;
+  flatpak.enable = true;
 
   #+END_SRC
 *** Networking
@@ -161,20 +162,12 @@ Service can be seen below.
   services.displayManager.sddm.enable = true;
   services.xserver.windowManager.qtile.enable = true;
   services = {
-    flatpak.enable = true;
     davfs2.enable = true;
   };
 #+END_SRC
 **** Flatpak
 #+BEGIN_SRC nix
-    xdg.portal = lib.mkIf (config.services.flatpak.enable) {
-    enable = true;
-    config.common.default = "*";
 
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-    ];
-  };
 #+END_SRC
 **** davfs2
 #+BEGIN_SRC nix

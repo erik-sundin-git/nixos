@@ -22,7 +22,7 @@
     git
     emacs
     inputs.neovim.defaultPackage.x86_64-linux
-
+    pkgs.nixfmt-rfc-style
     # fonts
     fira
     fira-code
@@ -109,18 +109,10 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
   services.displayManager.sddm.enable = true;
   services.xserver.windowManager.qtile.enable = true;
   services = {
-    flatpak.enable = true;
     davfs2.enable = true;
   };
 
-    xdg.portal = lib.mkIf (config.services.flatpak.enable) {
-    enable = true;
-    config.common.default = "*";
 
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-    ];
-  };
 
     services.autofs = lib.mkIf (config.services.davfs2.enable) {
       enable = false;
