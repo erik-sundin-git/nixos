@@ -10,7 +10,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     dots = {
-      url = "github:erik-sundin-git/dotfiles/nix";
+      url = "github:erik-sundin-git/dotfiles";
       flake = false;
     };
 
@@ -70,6 +70,7 @@
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
+          home-manager.backupFileExtension = "backup";
           home-manager.useUserPackages = true;
           home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
           home-manager.extraSpecialArgs = {inherit inputs;};
