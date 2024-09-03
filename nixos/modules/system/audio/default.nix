@@ -36,7 +36,8 @@ in
     };
 
     environment.systemPackages = mkIf cfg.desktop [
-
+      pkgs.pavucontrol
+      pkgs.ncspot
     ];
   };
 }
