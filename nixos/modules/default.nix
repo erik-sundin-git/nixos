@@ -3,5 +3,6 @@
     ./stylix
     ./virt
     ./flatpak
+    ./system
   ];
 }

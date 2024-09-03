@@ -42,7 +42,8 @@ in
   ./modules
   ];
   virt.enable = true;
-  flatpak.enable = true;
+  system.audio.enable = true;
+  system.audio.desktop = true;
 
   networking.hostName = systemSettings.networking.hostname;
   #  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
@@ -73,16 +74,6 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
     LC_PAPER = "sv_SE.UTF-8";
     LC_TELEPHONE = "sv_SE.UTF-8";
     LC_TIME = "sv_SE.UTF-8";
-  };
-
- # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
-    services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
   };
 
   services.xserver = {

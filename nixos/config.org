@@ -62,8 +62,8 @@ in
   ./modules
   ];
   virt.enable = true;
-  flatpak.enable = true;
-
+  system.audio.enable = true;
+  system.audio.desktop = true;
   #+END_SRC
 *** Networking
 #+BEGIN_SRC nix
@@ -107,19 +107,7 @@ nix.extraOptions = "access-tokens = " + accessTokenFile;
     LC_TELEPHONE = "sv_SE.UTF-8";
     LC_TIME = "sv_SE.UTF-8";
   };
-#+END_SRC
-*** Audio
-#+BEGIN_SRC nix
- # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
-    services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
-#+END_SRC
+  #+END_SRC
 *** X server
 #+BEGIN_SRC nix
   services.xserver = {
