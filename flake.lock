@@ -117,11 +117,11 @@
     "dots": {
       "flake": false,
       "locked": {
-        "lastModified": 1725286334,
-        "narHash": "sha256-ksoWq5XYHKPGkZb7a1Q/G1v18NZGvmwUbeM09pbELDU=",
+        "lastModified": 1725392484,
+        "narHash": "sha256-quDVmM4emS2Mxe5Ic8W/A8Jdxp36tkX5YFbuB4qfyWw=",
         "owner": "erik-sundin-git",
         "repo": "dotfiles",
-        "rev": "85b812a3675fdbe18ef3159cecf31a6b2732aab6",
+        "rev": "eb87b5e2a4e271630b85a504dae00e608fb35704",
         "type": "github"
       },
       "original": {
