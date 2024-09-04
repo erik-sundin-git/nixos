@@ -3,6 +3,7 @@
   pkgs,
   pkgs-stable,
   pkgs-patched,
+  stylix,
   inputs,
   nvim,
   ...
@@ -10,27 +11,21 @@
   imports = [
     ./hardware-configuration.nix
   ];
-  programs.steam.enable = true;
-  services.flatpak.enable = true;
-
   environment.systemPackages = [
     pkgs.kitty
     pkgs.rofi
     pkgs.zsh
     pkgs.nitrogen
     pkgs.ungoogled-chromium
-    pkgs.unzip
     pkgs-stable.qutebrowser
     pkgs-patched.picom-ftlabs
-    pkgs.wineWowPackages.staging
-
-    pkgs.ardour
-    pkgs.yabridge
-    pkgs.yabridgectl
   ];
-
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  hardware.opengl.enable = true;
+
+  boot.initrd.luks.devices."luks-03520681-0862-4dc1-b1f3-19a78e9b2e69".device = "/dev/disk/by-uuid/03520681-0862-4dc1-b1f3-19a78e9b2e69";
+ 
+  stylix.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
 }
