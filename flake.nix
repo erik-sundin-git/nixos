@@ -49,6 +49,8 @@
       config.allowUnfree = true;
     };
 
+
+
     /*
     * Variables to be used within the configurations
     */
@@ -85,9 +87,18 @@
       system = systemSettings.system;
       specialArgs = args;
       modules = [
-        ./nixos/config.nix
+   stylix.nixosModules.stylix
+                home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.backupFileExtension = "backup";
+          home-manager.useUserPackages = true;
+          home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
+          home-manager.extraSpecialArgs = {inherit inputs;};
+        }
         ./nixos/hosts/desktop/default.nix
-        ./nixos/modules/default.nix
+	./nixos/modules
+        ./nixos/config.nix
       ];
     };
 
