@@ -7,5 +7,6 @@
     ./starship/starship.nix
     ./chromium.nix
     ./dotfiles/default.nix
+    ./windowManager
   ];
 }
