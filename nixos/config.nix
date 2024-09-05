@@ -7,7 +7,7 @@
 }:
 
  let
-  accessTokenFile = builtins.readFile /etc/githubtoken; # Isn't really using.
+  #accessTokenFile = builtins.readFile /etc/githubtoken; # Isn't really using.
 
   userSettings = {
     username ="erik";
@@ -23,6 +23,7 @@
     emacs
     inputs.neovim.defaultPackage.x86_64-linux
     pkgs.nixfmt-rfc-style
+    sct
     # fonts
     fira
     fira-code
@@ -60,7 +61,7 @@ users.users.${userSettings.username} = {
   users.users.root.ignoreShellProgramCheck = true;
 
 nix.settings.experimental-features = ["nix-command flakes"];
-nix.extraOptions = "access-tokens = " + accessTokenFile;
+#nix.extraOptions = "access-tokens = " + accessTokenFile;
 
   time.timeZone = "Europe/Stockholm";
   i18n.defaultLocale = "en_US.UTF-8";

@@ -11,7 +11,6 @@ in {
 
   home.packages = [
     pkgs.pavucontrol
-    pkgs.nautilus
   ];
 
   home.sessionPath = [
