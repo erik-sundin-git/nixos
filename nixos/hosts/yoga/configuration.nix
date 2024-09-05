@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  pkgs-stable,
+  pkgs-unstable,
   pkgs-patched,
   stylix,
   inputs,
@@ -15,9 +15,10 @@
     pkgs.kitty
     pkgs.rofi
     pkgs.zsh
+    pkgs.quickemu
     pkgs.nitrogen
     pkgs.ungoogled-chromium
-    pkgs-stable.qutebrowser
+    pkgs.qutebrowser
     pkgs-patched.picom-ftlabs
   ];
 

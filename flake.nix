@@ -6,7 +6,7 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
     nixpkgs-patched.url = "github:erik-sundin-git/nixpkgs?ref=picom-ftlabs";
 
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     dots = {
