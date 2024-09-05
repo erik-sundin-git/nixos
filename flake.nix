@@ -2,8 +2,8 @@
   description = "My Nix Configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs?ref=nixos-24.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
     nixpkgs-patched.url = "github:erik-sundin-git/nixpkgs?ref=picom-ftlabs";
 
     home-manager.url = "github:nix-community/home-manager";
@@ -22,16 +22,14 @@
   outputs = {
     self,
     nixpkgs,
-    nixpkgs-stable,
+    nixpkgs-unstable,
     nixpkgs-patched,
     install-script,
     neovim,
     stylix,
     home-manager,
     ...
-  } @ inputs:
-
-    let
+  } @ inputs: let
     systemSettings = {
       system = "x86_64-linux"; # system arch
       homeDir = "/home/erik";
@@ -39,7 +37,7 @@
       wallpaper = ./home-manager/wallpapers/tokyo_night.jpg;
     };
 
-    pkgs-stable = import nixpkgs-stable {
+    pkgs-unstable = import nixpkgs-unstable {
       system = systemSettings.system;
       config.allowUnfree = true;
     };
@@ -55,13 +53,11 @@
     args = {
       inherit inputs;
       inherit systemSettings;
-      inherit pkgs-stable;
+      inherit pkgs-unstable;
       inherit pkgs-patched;
       inherit install-script;
     };
-  in
-
-    {
+  in {
     nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
       system = systemSettings.system;
       specialArgs = args;
@@ -85,9 +81,18 @@
       system = systemSettings.system;
       specialArgs = args;
       modules = [
-        ./nixos/config.nix
+        stylix.nixosModules.stylix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.backupFileExtension = "backup";
+          home-manager.useUserPackages = true;
+          home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
+          home-manager.extraSpecialArgs = {inherit inputs;};
+        }
         ./nixos/hosts/desktop/default.nix
-        ./nixos/modules/default.nix
+        ./nixos/modules
+        ./nixos/config.nix
       ];
     };
 
