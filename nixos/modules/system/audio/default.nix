@@ -26,7 +26,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    hardware.pulseaudio.enable = false;
+    hardware.pulseaudio.enable = lib.mkForce false;
     services.pipewire = {
       enable = true;
       alsa.enable = true;
@@ -38,6 +38,8 @@ in
     environment.systemPackages = mkIf cfg.desktop [
       pkgs.pavucontrol
       pkgs.ncspot
+      pkgs.spotify
+      pkgs.spicetify-cli
     ];
   };
 }
