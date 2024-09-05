@@ -23,7 +23,6 @@
     emacs
     inputs.neovim.defaultPackage.x86_64-linux
     pkgs.nixfmt-rfc-style
-    sct
     # fonts
     fira
     fira-code
@@ -81,7 +80,7 @@ nix.settings.experimental-features = ["nix-command flakes"];
     xkb.layout = "se";
     xkb.variant = "";
     enable = true;
-    videoDrivers = ["displaylink" "modesetting"];
+    videoDrivers = ["modesetting"];
   };
   services.libinput.enable = true;
 

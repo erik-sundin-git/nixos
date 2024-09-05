@@ -19,93 +19,109 @@
     install-script.url = "path:./install";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    nixpkgs-patched,
-    install-script,
-    neovim,
-    stylix,
-    home-manager,
-    ...
-  } @ inputs: let
-    systemSettings = {
-      system = "x86_64-linux"; # system arch
-      homeDir = "/home/erik";
-      user = "erik";
-      wallpaper = ./home-manager/wallpapers/tokyo_night.jpg;
-    };
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      nixpkgs-patched,
+      install-script,
+      neovim,
+      stylix,
+      home-manager,
+      ...
+    }@inputs:
+    let
+      systemSettings = {
+        system = "x86_64-linux"; # system arch
+        homeDir = "/home/erik";
+        user = "erik";
+        wallpaper = ./home-manager/wallpapers/tokyo_night.jpg;
+      };
 
-    pkgs-unstable = import nixpkgs-unstable {
-      system = systemSettings.system;
-      config.allowUnfree = true;
-    };
+      pkgs-unstable = import nixpkgs-unstable {
+        system = systemSettings.system;
+        config.allowUnfree = true;
+      };
 
-    pkgs-patched = import nixpkgs-patched {
-      system = systemSettings.system;
-      config.allowUnfree = true;
-    };
+      pkgs-patched = import nixpkgs-patched {
+        system = systemSettings.system;
+        config.allowUnfree = true;
+      };
 
-    /*
-    * Variables to be used within the configurations
-    */
-    args = {
-      inherit inputs;
-      inherit systemSettings;
-      inherit pkgs-unstable;
-      inherit pkgs-patched;
-      inherit install-script;
-    };
-  in {
-    nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
-      system = systemSettings.system;
-      specialArgs = args;
-      modules = [
-        stylix.nixosModules.stylix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.backupFileExtension = "backup";
-          home-manager.useUserPackages = true;
-          home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
-          home-manager.extraSpecialArgs = {inherit inputs;};
-        }
-        ./nixos/config.nix
-        ./nixos/hosts/yoga/default.nix
-        ./nixos/modules/default.nix
-      ];
-    };
+      # * Variables to be used within the configurations
+      args = {
+        inherit inputs;
+        inherit systemSettings;
+        inherit pkgs-unstable;
+        inherit pkgs-patched;
+        inherit install-script;
+      };
+    in
+    {
+      nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
+        system = systemSettings.system;
+        specialArgs = args;
+        modules = [
+          stylix.nixosModules.stylix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.backupFileExtension = "backup";
+            home-manager.useUserPackages = true;
+            home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
+            home-manager.extraSpecialArgs = {
+              inherit inputs;
+            };
+          }
+          ./nixos/config.nix
+          ./nixos/hosts/yoga/default.nix
+          ./nixos/modules/default.nix
+        ];
+      };
+      nixosConfigurations = {
+        desktop = nixpkgs.lib.nixosSystem {
+          system = systemSettings.system;
+          specialArgs = args;
+          modules = [
+            stylix.nixosModules.stylix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.useUserPackages = true;
+              home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+              };
+            }
+            ./nixos/hosts/desktop/default.nix
+            ./nixos/modules
+            ./nixos/config.nix
+          ];
+        };
 
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-      system = systemSettings.system;
-      specialArgs = args;
-      modules = [
-        stylix.nixosModules.stylix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.backupFileExtension = "backup";
-          home-manager.useUserPackages = true;
-          home-manager.users.${systemSettings.user} = import ./home-manager/home.nix;
-          home-manager.extraSpecialArgs = {inherit inputs;};
-        }
-        ./nixos/hosts/desktop/default.nix
-        ./nixos/modules
-        ./nixos/config.nix
-      ];
-    };
+        vm = nixpkgs.lib.nixosSystem {
+          system = systemSettings.system;
+          specialArgs = args;
+          modules = [
+            ./nixos/hosts/vm/default.nix
+          ];
+        };
 
-    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
-      system = systemSettings.system;
-      specialArgs = args;
-      modules = [
-        ./nixos/hosts/vm/default.nix
-      ];
-    };
+        iso = nixpkgs.lib.nixosSystem {
+          specialArgs = args;
+          modules = [
+            stylix.nixosModules.stylix
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares-plasma6.nix"
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+            ./nixos/hosts/iso/configuration.nix
+          ];
+        };
+      };
 
-    packages.${systemSettings.system} = {
-      install = install-script.packages.${systemSettings.system}.install; #basically just clones the repo atm.
+      packages.${systemSettings.system} = {
+        install = install-script.packages.${systemSettings.system}.install; # basically just clones the repo atm.
+      };
     };
-  };
 }
