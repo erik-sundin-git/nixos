@@ -4,14 +4,10 @@
   pkgs,
   ...
 }:
-
-with lib;
-let
+with lib; let
   cfg = config.system.audio;
-in
-{
+in {
   options = {
-
     system.audio.enable = mkOption {
       type = types.bool;
       default = false;
@@ -27,6 +23,7 @@ in
 
   config = mkIf cfg.enable {
     hardware.pulseaudio.enable = lib.mkForce false;
+    security.rtkit.enable = true;
     services.pipewire = {
       enable = true;
       alsa.enable = true;
@@ -39,6 +36,7 @@ in
       pkgs.pavucontrol
       pkgs.ncspot
       pkgs.spotify
+      pkgs.pulseaudio
       pkgs.spicetify-cli
     ];
   };

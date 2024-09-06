@@ -15,7 +15,7 @@
     pkgs.kitty
     pkgs.rofi
     pkgs.zsh
-    pkgs.quickemu
+    pkgs-unstable.quickemu
     pkgs.nitrogen
     pkgs.ungoogled-chromium
     pkgs.qutebrowser

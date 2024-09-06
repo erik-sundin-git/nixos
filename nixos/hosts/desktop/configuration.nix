@@ -19,7 +19,7 @@
     pkgs.nitrogen
     pkgs.ungoogled-chromium
     pkgs.qutebrowser
-    pkgs.quickemu
+    pkgs-unstable.quickemu
     pkgs-patched.picom-ftlabs
   ];
   # Bootloader.
