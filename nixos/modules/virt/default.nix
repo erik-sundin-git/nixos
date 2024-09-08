@@ -31,7 +31,7 @@ with lib; {
     security.polkit.enable = mkForce true;
     environment.systemPackages = [
       pkgs-unstable.spice
-      pkgs-unstable.qemu
+      pkgs-unstable.qemu_full
       (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
         qemu-system-x86_64 \
           -bios ${pkgs.OVMF.fd}/FV/OVMF.fd \
@@ -42,14 +42,14 @@ with lib; {
     systemd = {
       user.services.polkit-gnome-authentication-agent-1 = {
         description = "polkit-gnome-authentication-agent-1";
-        wantedBy = ["graphical-session.target"];
-        wants = ["graphical-session.target"];
-        after = ["graphical-session.target"];
+
+        wantedBy = [ "graphical-session.target" ];
+        wants = [ "graphical-session.target" ];
+        after = [ "graphical-session.target" ];
         serviceConfig = {
           Type = "simple";
           ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
           Restart = "on-failure";
-
           RestartSec = 1;
           TimeoutStopSec = 10;
         };
