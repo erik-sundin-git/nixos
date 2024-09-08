@@ -26,19 +26,27 @@ with lib;
     security.polkit.enable = mkForce true;
 
     systemd = {
-  user.services.polkit-gnome-authentication-agent-1 = {
-    description = "polkit-gnome-authentication-agent-1";
-    wantedBy = [ "graphical-session.target" ];
-    wants = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
+      user.services.polkit-gnome-authentication-agent-1 = {
+        description = "polkit-gnome-authentication-agent-1";
+        wantedBy = [ "graphical-session.target" ];
+        wants = [ "graphical-session.target" ];
+        after = [ "graphical-session.target" ];
+        serviceConfig = {
+          Type = "simple";
+          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+          Restart = "on-failure";
+          RestartSec = 1;
+          TimeoutStopSec = 10;
+        };
       };
-  };
-};
+    };
+    environment.systemPackages = mkIf config.virt.enable [
+      pkgs.qemu_full
+      (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
+        qemu-system-x86_64 \
+          -bios ${pkgs.OVMF.fd}/FV/OVMF.fd \
+          "$@"
+      '')
+    ];
   };
 }
