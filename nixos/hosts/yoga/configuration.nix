@@ -13,6 +13,7 @@
   ];
   environment.systemPackages = [
     pkgs.kitty
+    pkgs.htop
     pkgs.rofi
     pkgs.zsh
     pkgs-unstable.quickemu
@@ -28,6 +29,13 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
+
+  system.audio = {
+    enable = true;
+    desktop = true;
+    pulseaudio = true;
+    pipewire = false;
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
