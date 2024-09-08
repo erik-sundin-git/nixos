@@ -24,8 +24,7 @@ with lib;
     programs.gamescope.enable = true;
     environment.systemPackages = if config.virt.enable then [ ] else [ pkgs.discord ];
 
-
-    systemd.user.services.discord = mkIf config.x.enable {
+    systemd.user.services.discord = mkIf config.gaming.enable {
       description = "Discord Flatpak";
       serviceConfig.ExecStart = "${pkgs.flatpak}/bin/flatpak install flathub com.discordapp.Discord -y";
       wantedBy = [ "default.target" ];

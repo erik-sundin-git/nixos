@@ -4,5 +4,6 @@
     ./virt
     ./flatpak
     ./system
+    ./gaming
   ];
 }
