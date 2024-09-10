@@ -7,13 +7,12 @@
   inputs,
   nvim,
   ...
-}: {
-  imports = [
-    ./hardware-configuration.nix
-  ];
+}:
+{
+  imports = [ ./hardware-configuration.nix ];
+  packages.utils.enable = true;
   environment.systemPackages = [
     pkgs.kitty
-    pkgs.htop
     pkgs.rofi
     pkgs.zsh
     pkgs-unstable.quickemu

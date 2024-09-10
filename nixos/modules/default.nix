@@ -5,5 +5,6 @@
     ./flatpak
     ./system
     ./gaming
+    ./packages
   ];
 }
