@@ -6,11 +6,11 @@
   ...
 }:
 
- let
+let
   #accessTokenFile = builtins.readFile /etc/githubtoken; # Isn't really using.
 
   userSettings = {
-    username ="erik";
+    username = "erik";
   };
 
   systemSettings = {
@@ -37,30 +37,26 @@
 
 in
 
-  {
-  imports = [
-  ./modules
-  ];
-  virt.enable = true;
-  system.audio.enable = true;
-  system.audio.desktop = true;
+{
+  imports = [ ./modules ];
 
   networking.hostName = systemSettings.networking.hostname;
   #  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
 
-users.users.${userSettings.username} = {
+  users.users.${userSettings.username} = {
     isNormalUser = true;
     description = "";
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    defaultUserShell = pkgs.zsh;
     ignoreShellProgramCheck = true;
   };
 
-  users.defaultUserShell = pkgs.zsh;
   users.users.root.ignoreShellProgramCheck = true;
-
-nix.settings.experimental-features = ["nix-command flakes"];
-#nix.extraOptions = "access-tokens = " + accessTokenFile;
+  nix.settings.experimental-features = [ "nix-command flakes" ];
 
   time.timeZone = "Europe/Stockholm";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -80,23 +76,22 @@ nix.settings.experimental-features = ["nix-command flakes"];
     xkb.layout = "se";
     xkb.variant = "";
     enable = true;
-    videoDrivers = ["modesetting"];
+    videoDrivers = [ "modesetting" ];
+    xkb.options = "ctrl:swapcaps";
   };
-  services.libinput.enable = true;
+
 
   programs.firefox.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = lib.concatLists [
-    [ (pkgs.writeShellScriptBin "nix-doom-install" (builtins.readFile ./scripts/nix-doom-install.sh)) ]
-  ] ++ defaultPackages;
+  environment.systemPackages =
+    lib.concatLists [
+      [ (pkgs.writeShellScriptBin "nix-doom-install" (builtins.readFile ./scripts/nix-doom-install.sh)) ]
+    ]
+    ++ defaultPackages;
 
   console.keyMap = "sv-latin1";
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-  security.rtkit.enable = true;
 
   services.displayManager.sddm.enable = true;
   services.xserver.windowManager.qtile.enable = true;
@@ -104,15 +99,13 @@ nix.settings.experimental-features = ["nix-command flakes"];
     davfs2.enable = true;
   };
 
-
-
-    services.autofs = lib.mkIf (config.services.davfs2.enable) {
-      enable = false;
-      debug = true;
-      autoMaster = "
+  services.autofs = lib.mkIf (config.services.davfs2.enable) {
+    enable = false;
+    debug = true;
+    autoMaster = "
         /mnt/storagebox /etc/auto.dav
       ";
-    };
+  };
 
   system.stateVersion = "24.05";
 }
