@@ -6,13 +6,11 @@
   config,
   lib,
   pkgs,
+  pkgs-unstable,
   ...
 }:
-
-with lib;
-{
+with lib; {
   options = {
-
     virt.enable = mkOption {
       type = types.bool;
       default = false;
@@ -21,13 +19,30 @@ with lib;
   };
 
   config = mkIf config.virt.enable {
+    virtualisation.virtualbox.host = {
+      enable = true;
+      enableExtensionPack = true;
+    };
+
+    users.extraGroups.vboxusers.members = ["erik"];
+
     virtualisation.libvirtd.enable = true;
     programs.virt-manager.enable = true;
     security.polkit.enable = mkForce true;
+    environment.systemPackages = [
+      pkgs-unstable.spice
+      pkgs-unstable.qemu_full
+      (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
+        qemu-system-x86_64 \
+          -bios ${pkgs.OVMF.fd}/FV/OVMF.fd \
+          "$@"
+      '')
+    ];
 
     systemd = {
       user.services.polkit-gnome-authentication-agent-1 = {
         description = "polkit-gnome-authentication-agent-1";
+
         wantedBy = [ "graphical-session.target" ];
         wants = [ "graphical-session.target" ];
         after = [ "graphical-session.target" ];
@@ -40,13 +55,5 @@ with lib;
         };
       };
     };
-    environment.systemPackages = mkIf config.virt.enable [
-      pkgs.qemu_full
-      (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
-        qemu-system-x86_64 \
-          -bios ${pkgs.OVMF.fd}/FV/OVMF.fd \
-          "$@"
-      '')
-    ];
   };
 }
