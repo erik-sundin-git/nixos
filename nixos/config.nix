@@ -51,9 +51,9 @@ in
       "networkmanager"
       "wheel"
     ];
-    defaultUserShell = pkgs.zsh;
     ignoreShellProgramCheck = true;
   };
+  users.defaultUserShell = pkgs.zsh;
 
   users.users.root.ignoreShellProgramCheck = true;
   nix.settings.experimental-features = [ "nix-command flakes" ];
@@ -79,7 +79,6 @@ in
     videoDrivers = [ "modesetting" ];
     xkb.options = "ctrl:swapcaps";
   };
-
 
   programs.firefox.enable = true;
 
