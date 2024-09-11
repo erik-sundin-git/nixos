@@ -13,8 +13,10 @@
     #inputs.qtile-flake.packages.x86_64-linux.qtile
     pkgs.qtile
     inputs.neovim.defaultPackage.x86_64-linux
+   pkgs.coreutils-full
     pkgs.wlroots
-    # # You can also create simple shell scripts directly inside your
+    pkgs.firefox
+# # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
     # (pkgs.writeShellScriptBin "my-hello" ''
