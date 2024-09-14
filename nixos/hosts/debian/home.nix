@@ -3,7 +3,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   home.username = "erik";
   home.homeDirectory = "/home/erik";
 
@@ -13,10 +14,16 @@
     #inputs.qtile-flake.packages.x86_64-linux.qtile
     pkgs.qtile
     inputs.neovim.defaultPackage.x86_64-linux
-   pkgs.coreutils-full
+    pkgs.coreutils-full
     pkgs.wlroots
+    pkgs.ncspot
+    pkgs.woeusb
+    pkgs.weylus
+  #  pkgs.spotify
+    pkgs.quickemu
+    pkgs.nixfmt-rfc-style
     pkgs.firefox
-# # You can also create simple shell scripts directly inside your
+    # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
     # (pkgs.writeShellScriptBin "my-hello" ''
