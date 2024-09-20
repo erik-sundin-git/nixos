@@ -14,6 +14,10 @@
       flake = false;
     };
 
+    rofi-themes = {
+      url = "github:lr-tech/rofi-themes-collection";
+      flake = false;
+    };
 
     qtile-flake = {
       url = "github:qtile/qtile";
