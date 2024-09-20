@@ -19,12 +19,11 @@ with lib;
     };
   };
 
-  config = mkIf config.system.bluetooth.enable {
+  config = mkIf config.rofi.enable {
 
     programs.rofi = {
       enable = true;
     };
-
-    environment.systemPackages = [ pkgs.hello ];
+    home.packages = [ pkgs.rofi ];
   };
 }
