@@ -1,5 +1,7 @@
-{dots, ...}: {
+{ dots, ... }:
+{
   imports = [
     ./rofi
+    ./polybar
   ];
 }
