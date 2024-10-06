@@ -1,0 +1,9 @@
+[submodule "dotfiles"]
+	path = dotfiles
+	url = https://github.com/erik-sundin-git/dotfiles
+[submodule "nixos/modules/emacs/packages/autosync-magit"]
+	path = nixos/modules/emacs/packages/autosync-magit
+	url = https://github.com/sbougerel/autosync-magit.git
+[submodule "nixos/modules/emacs/packages/logseq-org-roam"]
+	path = nixos/modules/emacs/packages/logseq-org-roam
+	url = https://github.com/sbougerel/logseq-org-roam.git

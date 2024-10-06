@@ -1,0 +1,464 @@
+
+#+TITLE: Emacs configuration
+#+startup: overview
+* use-package
+#+begin_src emacs-lisp
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+
+;; Install use-package if it's not already installed
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; Ensure all packages are installed automatically
+(require 'use-package)
+#+end_src
+* pdf
+#+begin_src emacs-lisp
+(use-package pdf-tools)
+#+end_src
+* Performance
+** Measure startup speed
+#+begin_src emacs-lisp :tangle yes
+(setq my/emacs-started nil)
+
+(add-hook 'emacs-startup-hook
+	  (lambda ()
+	    (message "*** Emacs loaded in %s with %d garbage collections."
+		     (format "%.2f seconds"
+			     (float-time
+			      (time-subtract after-init-time before-init-time)))
+		     gcs-done)
+	    (setq my/emacs-started t)))
+#+end_src	  
+
+** Prevent emacs from closing
+#+begin_src emacs-lisp :tangle yes
+(setq confirm-kill-emacs 'y-or-n-p)
+#+end_src
+
+* Looks and Ui
+
+** Basic UI stuff
+#+begin_src emacs-lisp :tangle yes
+  (setq inhibit-startup-message t)
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
+
+  (menu-bar-mode -1)            ; Disable the menu bar
+
+  ;; Set up the visible bell
+  (setq visible-bell t)
+
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
+  (menu-bar-mode -1)            ; Disable the menu bar
+#+end_src
+
+** Theme
+*** Doom
+#+begin_src emacs-lisp :tangle yes
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-xcode t)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+#+end_src
+
+#+RESULTS:
+: t
+
+*** Modus themes
+#+begin_src emacs-lisp
+  (setq modus-themes-mode-line '(borderless padded))
+  (setq modus-themes-region '(bg-only))
+  (setq modus-themes-completions '((matches . (extrabold))
+  				 (selection . (semibold accented))
+  				 (popup . (accented intense))))
+
+  (setq modus-themes-bold-constructs 't)
+  (setq modus-themes-lang-checkers '(background))
+  (load-theme 'modus-vivendi t)
+#+end_src
+
+#+RESULTS:
+: t
+
+** Modeline
+#+BEGIN_SRC emacs-lisp :tangle yes
+(defun my-toggle-frame-fullscreen ()
+  "Toggle fullscreen mode and battery indicator in modeline."
+  (interactive)
+  (toggle-frame-fullscreen)
+  (if display-battery-mode
+      (display-battery-mode -1)  ; Turn off battery indicator
+    (display-battery-mode 1)))   ; Turn on battery indicator
+#+END_SRC
+
+#+RESULTS:
+: my-toggle-frame-fullscreen
+
+
+** opacity
+#+begin_src emacs-lisp :tangle yes
+(defun my/toggle-window-transparency ()
+  "Toggle transparency."
+  (interactive)
+  (let ((alpha-transparency 75))
+    (pcase (frame-parameter nil 'alpha-background)
+      (alpha-transparency (set-frame-parameter nil 'alpha-background 100))
+      (t (set-frame-parameter nil 'alpha-background alpha-transparency)))))
+
+#+END_SRC
+
+#+RESULTS:
+: my/toggle-window-transparency
+
+
+* general.el
+#+begin_src emacs-lisp  :tangle yes
+      (use-package general
+        :ensure t)
+      (general-define-key
+       "M-o" 'other-window
+       "C-c f" 'my-toggle-frame-fullscreen)
+      (general-create-definer my-leader-def
+      ;; :prefix my-leader
+      ;; or without a variable
+      :prefix "C-ö")
+
+      (my-leader-def
+        "e r" 'eval-region)
+#+end_src
+
+#+RESULTS:
+
+* Completion
+** company
+#+begin_src emacs-lisp :tangle yes
+  (use-package company
+    :ensure t
+    :config
+    (setq company-minimum-prefix-length 2))
+  (global-company-mode 1)
+
+#+end_src
+
+#+RESULTS:
+: t
+** vertico
+#+begin_src emacs-lisp :tangle yes
+  ;; Enable vertico
+  (use-package vertico
+    :custom
+    ;; (vertico-scroll-margin 0) ;; Different scroll margin
+    (vertico-count 20) ;; Show more candidates
+    ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+    ;; (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
+    :init
+    (vertico-mode))
+
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  ;; A few more useful configurations...
+  (use-package emacs
+    :custom
+    ;; Support opening new minibuffers from inside existing minibuffers.
+    (enable-recursive-minibuffers t)
+    ;; Hide commands in M-x which do not work in the current mode.  Vertico
+    ;; commands are hidden in normal buffers. This setting is useful beyond
+    ;; Vertico.
+    (read-extended-command-predicate #'command-completion-default-include-p)
+    :init
+    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+
+
+  ;; Optionally use the `orderless' completion style.
+(use-package orderless
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+  #+end_src
+
+  #+RESULTS:
+
+* Recent files
+#+begin_src emacs-lisp :tangle yes
+  (recentf-mode 1)
+  (general-define-key
+   "C-x C-." 'recentf-open)
+  
+#+end_src
+
+#+RESULTS:
+
+* Font
+#+begin_src emacs-lisp :tangle yes
+  (set-face-attribute 'default nil :font "Fira Code" :height 150)
+
+  ;; Set the fixed pitch face
+  (set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 150)
+#+end_src
+
+#+RESULTS:
+
+* Magit
+#+begin_src emacs-lisp :tangle yes
+(use-package magit
+  :ensure t)
+#+end_src
+
+* Which key
+#+begin_src emacs-lisp :tangle yes
+  (use-package which-key)
+  (which-key-mode)
+#+end_src
+
+* org
+** Get org roam
+#+begin_src emacs-lisp :tangle yes
+  (use-package org-roam
+    :after org
+    :config
+    (use-package logseq-org-roam
+      :load-path ("~/nixos/nixos/modules/emacs/packages/logseq-org-roam") ; Adjust path as needed
+      :ensure t)
+   
+    (use-package autosync-magit
+      :load-path ("~/nixos/nixos/modules/emacs/packages/autosync-magit") ; Adjust path as needed
+      :ensure ))
+#+end_src
+
+#+RESULTS:
+: t
+** Todo setup
+#+begin_src emacs-lisp :tangle yes
+
+;; Add PROJ as a TODO keyword
+(setq org-todo-keywords
+      '((sequence "TODO" "PROJ" "IN-PROGRESS" "DONE")))
+
+;; Customize the face for PROJ
+(setq org-todo-keyword-faces
+      '(("PROJ" . (:foreground "orange" :weight))))
+#+end_src
+
+#+RESULTS:
+| PROJ | :foreground | orange | :weight |
+
+** setup directories
+#+begin_src emacs-lisp :tangle yes
+  (setq org-directory "~/notes/" org-roam-directory (file-truename
+        (file-name-concat org-directory "roam/")) org-attach-id-dir
+        (expand-file-name "assets" org-roam-directory)
+        org-roam-dailies-directory "journals/"
+        org-roam-file-exclude-regexp "\\.git/.*\\|logseq/.*$")
+#+end_src
+
+#+RESULTS:
+: \.git/.*\|logseq/.*$
+** org look
+#+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package org-bullets
+      :after org
+      :hook (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (add-hook 'org-mode-hook 'org-indent-mode)  
+  #+END_SRC
+** keybindings
+#+begin_src emacs-lisp :tangle yes
+  (my-leader-def
+    "r f" '("Find roam note" . org-roam-node-find)
+    "r d f" '("Goto Today" . org-roam-dailies-goto-today)
+    "r d y" '("Capture Today" . org-roam-dailies-capture-today))
+  (which-key-add-key-based-replacements
+    "C-ö r" "Roam"
+    "C-ö r d" "dailies"
+    "C-ö e" "Eval")
+#+end_src
+
+#+RESULTS:
+
+** org tags
+#+begin_src emacs-lisp :tangle yes
+  (setq org-tag-alist '(
+                        ("@skola" . ?s)
+                        ("@hem" . ?h)
+                        ("@ekonomi" . ?e)
+                        ("@system" . ?S)))
+#+end_src
+
+#+RESULTS:
+: ((@skola . 115) (@hem . 104) (@ekonomi . 101) (@system . 83))
+
+** org capture templates
+#+begin_src emacs-lisp :tangle yes
+  (setq org-capture-templates
+        ;; Add entry to inbox
+        '(("a" "Agenda / Calendar")
+          ("aa" "Add an item to the agenda" entry
+           (file+olp+datetree "~/notes/roam/20240912165402-agenda.org")
+           "* %?\nSCHEDULED: %^{Time}t\n")
+
+          ("t" "Todo")
+          ("tt" "Todo" entry (file+headline "~/notes/roam/20240912165541-task_inbox.org" "Tasks")
+           "* TODO %?\n")
+
+          ("ts" "System Configuration" entry
+           (file+headline "~/notes/roam/20240822143307-todo_system.org" "Inbox")
+           "* TODO %?\n")
+
+          ("l" "Transaktion - ledger")
+          ("lm" "Transaction" plain (file "~/ledger/default.ledger")
+           "%(org-read-date) Matvaror\n    Tillgångar:Swedbank:Privatkonto\n    Utgifter:Mat:Matvaror  SEK %^{Amount}"
+           :empty-lines 1)))
+#+end_src
+** Agenda
+*** View
+ #+begin_src emacs-lisp :tangle yes
+      (setq org-agenda-custom-commands
+            '(("s" "School agenda" agenda ""
+      	 ((org-agenda-span 'day)
+      	  (org-agenda-overriding-header "School")
+      	  (org-agenda-tag-filter-preset
+      	   '("+skola"))))
+      	("c" "Today's Schedule and Upcoming Deadlines"
+      	 ((agenda ""
+      		  ((org-agenda-span 'week)                  ;; Today's scheduled tasks
+      		   (org-deadline-warning-days 0)
+      		   (org-agenda-tag-filter-preset
+   		    '("-dailies"))
+      		   (org-agenda-overriding-header "Week's Schedule:")))))))
+#+end_src
+*** Other
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (my-leader-def
+    "o a" '("Org Agenda" . org-agenda))
+  (which-key-add-key-based-replacements
+    "C-ö o" "open")
+
+#+END_SRC
+
+#+RESULTS:
+
+** Other
+Other org stuff
+
+*** Make links in org-mode open in the same buffer.
+#+begin_src emacs-lisp :tangle yes
+(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+#+end_src
+
+#+RESULTS:
+: find-file
+
+
+** org-roamcapture templates
+#+begin_src emacs-lisp :tangle yes
+
+;; Regular
+(setq org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      ;; Accomodates for the fact that Logseq uses the "pages" directory
+      :target (file+head "pages/${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+
+     ;; Cards
+     ("c" "Create a card")
+
+     ("cd" "Database management" plain
+      (file "~/notes/roam/capture-templates/card.org")
+      :target (file+head "database-management/cards/${slug}.org"
+                         "#+title: ${title}\n")
+      :unnarrowed t)
+
+     ;; regular entries
+     ("s" "Select other category")
+
+     ("sd" "Database management" plain
+      "%?"
+      :target (file+head "database-management/${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t))
+
+   ;; Dailies
+   org-roam-dailies-capture-templates
+   '(
+     ("d" "daily" plain
+      "\n* Entry %<%H:%M>\n%?"
+      :target (file+head "daily/%<%Y-%m-%d>.org"
+                         "#+title: Daily Journal %<%Y-%m-%d>\n"))
+     ("s" "Sleep stuff")
+     ("ss" "sleep" plain
+      "%?\n* Sleep\n** score\n** notes\n"
+      :target (file+head "sleep/%<%Y-%m-%d>.org"
+                         "#+title: Sleep Log %<%Y-%m-%d>\n"))
+
+     ("sr" "Kvällsrutin" plain
+      (file "~/notes/roam/capture-templates/sovrutin.org")
+      :target (file+head "Kvällsrutin/%<%Y-%m-%d>.org"
+                       "#+title: Kvällsrutin %<%Y-%m-%d>\n"))
+
+     ("t" "tetra" table-line
+      "|%T|%^{typ:|vape}|%^{längd|}|%^{antal|1}|"
+      :target (file+head "tetra/%<%Y-%m-%d>.org"
+                         "#+title: Daily t Journal %<%Y-%m-%d>\n")
+      :immediate-finish)))
+
+#+end_src
+
+* Lang
+** nix
+#+begin_src emacs-lisp  
+  (use-package nix-mode
+    :mode ("\\.nix\\'" "\\.nix.in\\'")
+    :general
+    (general-define-key
+     :keymaps 'nix-mode-map
+     "C-c C-f" 'nix-format-buffer))
+   
+    (use-package nix-drv-mode
+      :ensure nix-mode
+      :mode "\\.drv\\'")
+
+  (use-package nix-shell
+      :ensure nix-mode
+      :commands (nix-shell-unpack nix-shell-configure nix-shell-build))
+
+  (use-package nix-repl
+      :ensure nix-mode
+      :commands (nix-repl))  
+#+end_src
+				

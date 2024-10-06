@@ -8,7 +8,7 @@
       enable = false;
       debug = true;
       autoMaster = "
-        $HOME/storagebox /etc/auto.dav
+        /mnt/storagebox /etc/auto.dav
       ";
     };
   };

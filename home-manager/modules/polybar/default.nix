@@ -5,8 +5,7 @@
   pkgs-unstable,
   ...
 }:
-with lib;
-{
+with lib; {
   options = {
     polybar.enable = mkOption {
       type = types.bool;
@@ -18,8 +17,8 @@ with lib;
   config = mkIf config.polybar.enable {
     services.polybar = {
       enable = true;
+      config = ./config.ini;
       script = "polybar example &";
     };
-
   };
 }

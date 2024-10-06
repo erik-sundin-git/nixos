@@ -1,0 +1,22 @@
+{
+  config,
+  lib,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
+with lib; {
+  options = {
+    hyprland.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "My Hyprland Config";
+    };
+  };
+
+  config = mkIf config.hyprland.enable {
+
+    environment.systemPackages = [
+    ];
+  };
+}

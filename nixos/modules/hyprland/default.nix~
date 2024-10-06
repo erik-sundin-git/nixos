@@ -1,0 +1,22 @@
+{
+  config,
+  lib,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
+with lib;
+{
+  options = {
+    hyprlandNixosModule.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "My Hyprland config.";
+    };
+  };
+
+  config = mkIf config.hyprlandNixosModule.enable {
+
+    environment.systemPackages = [ ];
+  };
+}

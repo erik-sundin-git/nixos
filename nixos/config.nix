@@ -92,7 +92,7 @@ in
 
   console.keyMap = "sv-latin1";
 
-  services.displayManager.sddm.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
   services.xserver.windowManager.qtile.enable = true;
   services = {
     davfs2.enable = true;
