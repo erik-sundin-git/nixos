@@ -43,21 +43,32 @@
 
 ** Basic UI stuff
 #+begin_src emacs-lisp :tangle yes
-  (setq inhibit-startup-message t)
-  (scroll-bar-mode -1)        ; Disable visible scrollbar
-  (tool-bar-mode -1)          ; Disable the toolbar
-  (tooltip-mode -1)           ; Disable tooltips
-  (set-fringe-mode 10)        ; Give some breathing room
+    (setq inhibit-startup-message t)
+    (scroll-bar-mode -1)        ; Disable visible scrollbar
+    (tool-bar-mode -1)          ; Disable the toolbar
+    (tooltip-mode -1)           ; Disable tooltips
+    (set-fringe-mode 10)        ; Give some breathing room
 
-  (menu-bar-mode -1)            ; Disable the menu bar
+    (menu-bar-mode -1)            ; Disable the menu bar
 
-  ;; Set up the visible bell
-  (setq visible-bell t)
+    ;; Set up the visible bell
+    (setq visible-bell t)
 
-  (column-number-mode)
-  (global-display-line-numbers-mode t)
-  (menu-bar-mode -1)            ; Disable the menu bar
+    (column-number-mode)
+    (global-display-line-numbers-mode t)
+
+
+    ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+  		pdf-view-mode-hook
+                  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+    (menu-bar-mode -1)            ; Disable the menu bar
 #+end_src
+
+#+RESULTS:
 
 ** Theme
 *** Doom
@@ -294,12 +305,13 @@
       :hook (org-mode . org-bullets-mode)
       :custom
       (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-  (add-hook 'org-mode-hook 'org-indent-mode)  
-  #+END_SRC
+    #+END_SRC
 ** keybindings
 #+begin_src emacs-lisp :tangle yes
   (my-leader-def
-    "r f" '("Find roam note" . org-roam-node-find)
+    "C-x" 'org-capture
+    "r i" '("Roam insert note" . org-roam-node-insert)
+    "r f" '("Roam find note" . org-roam-node-find)
     "r d f" '("Goto Today" . org-roam-dailies-goto-today)
     "r d y" '("Capture Today" . org-roam-dailies-capture-today))
   (which-key-add-key-based-replacements
@@ -309,7 +321,6 @@
 #+end_src
 
 #+RESULTS:
-
 ** org tags
 #+begin_src emacs-lisp :tangle yes
   (setq org-tag-alist '(
@@ -384,10 +395,16 @@ Other org stuff
 #+RESULTS:
 : find-file
 
+*** clock related
+#+begin_src emacs-lisp :tangle yes
+(setq org-log-note-clock-out t)
+#+end_src
+
+#+RESULTS:
+: t
 
 ** org-roamcapture templates
 #+begin_src emacs-lisp :tangle yes
-
 ;; Regular
 (setq org-roam-capture-templates
    '(("d" "default" plain
@@ -438,6 +455,9 @@ Other org stuff
       :immediate-finish)))
 
 #+end_src
+
+#+RESULTS:
+| d | daily | plain |
 
 * Lang
 ** nix
