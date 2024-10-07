@@ -6,6 +6,7 @@
 #  services.desktopManager.plasma6.enable = true;
 
   system.bluetooth.enable = true;
+  virt.enable = true;
   stylix.enable = true;
   hyprlandNixosModule.enable = true;
   # Bootloader.
