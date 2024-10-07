@@ -20,7 +20,6 @@ with lib; {
 
   config = mkIf config.virt.enable {
     virtualisation.virtualbox.host = {
-      enable = true;
       enableExtensionPack = true;
     };
 
@@ -31,6 +30,7 @@ with lib; {
     security.polkit.enable = mkForce true;
     environment.systemPackages = [
       pkgs-unstable.spice
+      pkgs-unstable.quickemu
       pkgs-unstable.qemu_full
       (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
         qemu-system-x86_64 \
